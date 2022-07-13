@@ -5,8 +5,7 @@ import session from "express-session";
 import MySQLStore from "express-mysql-session";
 import compression from "compression";
 import classesRouter from "./public/classes/classes.js"
-import auth from "./public/auth/auth.js";
-const authRouter = auth.router;
+import {router as authRouter, isAuthenticated} from "./public/auth/auth.js";
 
 const app = express();
 const port = 3000;
@@ -45,9 +44,13 @@ app.use(passport.session());
 //set up view engine and file dir
 app.set("view engine", "pug");
 app.set("views", __dirname + "/public/views/pug");
+
+
 app.use("/public", express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (req, res) => {
+  res.render("home", {authentication : req.isAuthenticated()});
+});
 app.get("/login", (req, res) => res.render("login"));
 app.use("/", authRouter);
 app.use("/classes", classesRouter);
