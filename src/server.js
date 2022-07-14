@@ -6,6 +6,7 @@ import MySQLStore from "express-mysql-session";
 import compression from "compression";
 import classesRouter from "./public/classes/classes.js"
 import {router as authRouter, isAuthenticated} from "./public/auth/auth.js";
+import settingsRouter from "./public/settings/profile.js"
 
 const app = express();
 const port = 3000;
@@ -51,9 +52,12 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => {
   res.render("home", {authentication : req.isAuthenticated()});
 });
-app.get("/login", (req, res) => res.render("login"));
+
+//set routers
 app.use("/", authRouter);
 app.use("/classes", classesRouter);
+app.use("/settings", settingsRouter);
+
 
 app.listen(port, () => {
     console.log(`start ${port}`);
